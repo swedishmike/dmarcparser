@@ -3,7 +3,9 @@ import datetime
 
 if __name__ == '__main__':
     # file_to_parse = "bzone.it!cloud.sophos.com!0!1478085339.xml"
-    file_to_parse = "google.com!sophos.com!1477958400!1478044799.xml"
+    # file_to_parse = "google.com!sophos.com!1477958400!1478044799.xml"
+    # file_to_parse = "rabobank.nl!cloud.sophos.com!1478149205!1478235604.xml"
+    file_to_parse = "yahoo.com!sophos.com!1478044800!1478131199.xml"
     tree = ET.parse(file_to_parse)
     report = tree.getroot()
 
@@ -17,15 +19,21 @@ if __name__ == '__main__':
     record_list = report.findall('record')
 
     print("Total records: ", len(record_list))
-
     for record in record_list:
+        reportable = False
         print(record.find('row/source_ip').text)
         print(record.find('identifiers/header_from').text)
         if record.find('row/policy_evaluated/dkim').text != "pass":
             print("DKIM failed!")
+            reportable = True
         else:
             print("DKIM passed")
         if record.find('row/policy_evaluated/spf').text != "pass":
             print("SPF failed!")
+            reportable = True
         else:
             print("SPF passed!")
+        if reportable:
+            print("You would have been reported")
+        else:
+            print("You got away with it")

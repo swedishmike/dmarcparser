@@ -21,4 +21,3 @@ def open_connection(verbose=False):
 if __name__ == '__main__':
     with open_connection(verbose=True) as c:
         print(c)
-#

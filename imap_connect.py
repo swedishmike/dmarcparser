@@ -90,17 +90,21 @@ def extract_files(verbose=False):
         print("No .zip files")
     if len(gzfiles) > 0:
         for file in gzfiles:
+            # Generate the new location / filename for the decompressed file. Clunky? Hell yeah!
+            path, outfile = os.path.splitext(file)
+            newfilelocation = unpackdir + outfile
+
+            # Decompress the gz file
             compressedfile = gzip.GzipFile(file)
             content = compressedfile.read()
             compressedfile.close()
-            print(content)
-            path, filename = os.path.split(file)
-            shortname, extension = os.path.splitext(filename)
-            newfilename = unpackdir + shortname
-            print(newfilename)
-            decompressedfile = open(newfilename, 'wb')
+
+            # Write the new decompressed file in the unpack directory
+            decompressedfile = open(newfilelocation, 'wb')
             decompressedfile.write(content)
             decompressedfile.close()
+
+            # Delete the compressed file
             os.remove(file)
 
     else:

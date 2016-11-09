@@ -58,7 +58,7 @@ class dmarc_rua_parser:
                     "report_id=\"%s\" "
                     "report_startdate=\"%s\" "
                     "report_enddate=\"%s\" "
-                    "source_ip=\"%s\" "
+                    "srcip=\"%s\" "
                     "header_from=\"%s\" "
                     "policy_dkim=\"%s\" "
                     "policy_spf=\"%s\" "

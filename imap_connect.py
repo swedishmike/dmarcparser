@@ -1,17 +1,21 @@
 import imaplib
 import os
 import email
-
+import zipfile
+import gzip
 
 hostname = os.environ.get('IMAPSERVER')
 username = os.environ.get('IMAP_USER')
 password = os.environ.get('IMAP_PASSWORD')
 zipfiles = []
 gzfiles = []
+packdir = "packed/"
+unpackdir = "unpacked/"
+
 
 def connect_and_find_new_reports(verbose=False):
 
-    packdir = "packed/"
+
 
     # Connect to the server
     if verbose:
@@ -70,22 +74,39 @@ def connect_and_find_new_reports(verbose=False):
     # print(gzfiles)
     # for file in gzfiles:
     #     print(file)
-
+    imap.close()
+    imap.logout()
     return imap
 
 def extract_files(verbose=False):
     if len(zipfiles) > 0:
         for file in zipfiles:
             print(file)
+            zip_ref = zipfile.ZipFile(file, 'r')
+            zip_ref.extractall(unpackdir)
+            zip_ref.close()
+            os.remove(file)
     else:
-        print("No zip files")
+        print("No .zip files")
     if len(gzfiles) > 0:
         for file in gzfiles:
-            print(file)
+            compressedfile = gzip.GzipFile(file)
+            content = compressedfile.read()
+            compressedfile.close()
+            print(content)
+            path, filename = os.path.split(file)
+            shortname, extension = os.path.splitext(filename)
+            newfilename = unpackdir + shortname
+            print(newfilename)
+            decompressedfile = open(newfilename, 'wb')
+            decompressedfile.write(content)
+            decompressedfile.close()
+            os.remove(file)
+
     else:
-        print("No gz files")
+        print("No .gz files")
 
 if __name__ == '__main__':
     with connect_and_find_new_reports(verbose=True) as c:
-        print(c)
-    extract_files()
+        # pass
+        extract_files()

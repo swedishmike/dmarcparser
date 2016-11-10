@@ -78,7 +78,7 @@ def connect_and_find_new_reports(verbose=False):
     imap.logout()
     return imap
 
-def extract_files(verbose=False):
+def extract_files(target):
     files_to_parse = False
     if len(zipfiles) > 0:
         for file in zipfiles:
@@ -118,17 +118,17 @@ def extract_files(verbose=False):
 
 
     if files_to_parse:
-        send_files_to_parser()
+        send_files_to_parser(target)
 
 
-def send_files_to_parser():
+def send_files_to_parser(target):
     print("Starting to parse files")
     for file in glob.glob('unpacked/*.xml'):
-        dmarc_rua_parser(file)
+        dmarc_rua_parser(file, target)
         os.remove(file)
 
 
 if __name__ == '__main__':
     imap = connect_and_find_new_reports(verbose=True)
-    extract_files()
+    extract_files(target)
 

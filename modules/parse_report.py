@@ -1,12 +1,22 @@
 import xml.etree.ElementTree as ET
 import datetime
+import sys
 
 class dmarc_rua_parser:
-    def __init__(self, file_to_parse):
+    def __init__(self, file_to_parse, target):
         self.file_to_parse = file_to_parse
-        self.parse_rua_file(self.file_to_parse)
+        self.target = target
+        self.parse_rua_file(self.file_to_parse, target)
 
-    def parse_rua_file(self, file_to_parse):
+    def publish_to_splunk(self, sourcetype, submitstring, target):
+        try:
+            target.submit(submitstring, sourcetype=sourcetype)
+        except:
+            print("Could not submit to Splunk", sys.exc_info())
+            sys.exit(1)
+
+
+    def parse_rua_file(self, file_to_parse, target):
         tree = ET.parse(file_to_parse)
         report = tree.getroot()
 
@@ -71,10 +81,13 @@ class dmarc_rua_parser:
                        record.find('row/policy_evaluated/dkim').text,record.find('row/policy_evaluated/spf').text,
                        auth_dkim_domain, auth_dkim_result,
                        auth_spf_domain, auth_spf_result))
-                print(sourcetype, submitstring)
 
+                print(sourcetype, submitstring)
+                self.publish_to_splunk(sourcetype, submitstring, target)
             else:
                 pass
+
+
 
 if __name__ == '__main__':
     # file_to_parse = "bzone.it!cloud.sophos.com!0!1478085339.xml"

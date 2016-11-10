@@ -3,9 +3,6 @@ import splunklib.client as client
 import os
 
 
-
-
-
 def connect_to_splunk(SplunkHost, SplunkPort, SplunkUser, SplunkPassword):
     """ Sets up the connection to the Splunk instance """
     global service
@@ -36,6 +33,27 @@ def connect_to_splunk(SplunkHost, SplunkPort, SplunkUser, SplunkPassword):
 def disconnect_from_splunk():
     service.logout()
     print("Disconnected from Splunk.")
+
+
+def check_for_splunkindex(SplunkIndex):
+    """ Makes sure that the index we want to use exists. """
+    global target
+    indexes = service.indexes
+    indexlist = []
+
+    for index in indexes:
+        indexlist.append(index.name)
+
+    if SplunkIndex in indexlist:
+        print "\t[+] The specified Splunk Index exists"
+        target = service.indexes[SplunkIndex]
+        print target
+        return target
+
+    else:
+        print "\t[-] Can't find the specified Splunk Index:", SplunkIndex
+        logging.error('Cannot find the specified Splunk Index: %s', SplunkIndex)
+        sys.exit(1)
 
 if __name__ == '__main__':
     print("Should not be started on its own - please run \'dmarcparser.py\' instead.")

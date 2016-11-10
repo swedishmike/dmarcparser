@@ -3,6 +3,9 @@ import os
 import email
 import zipfile
 import gzip
+import glob
+from parse_report import dmarc_rua_parser
+
 
 hostname = os.environ.get('IMAPSERVER')
 username = os.environ.get('IMAP_USER')
@@ -14,9 +17,6 @@ unpackdir = "unpacked/"
 
 
 def connect_and_find_new_reports(verbose=False):
-
-
-
     # Connect to the server
     if verbose:
         print('Connecting to', hostname)
@@ -79,6 +79,7 @@ def connect_and_find_new_reports(verbose=False):
     return imap
 
 def extract_files(verbose=False):
+    files_to_parse = False
     if len(zipfiles) > 0:
         for file in zipfiles:
             print(file)
@@ -86,8 +87,12 @@ def extract_files(verbose=False):
             zip_ref.extractall(unpackdir)
             zip_ref.close()
             os.remove(file)
+            files_to_parse = True
+            print(files_to_parse)
     else:
         print("No .zip files")
+
+
     if len(gzfiles) > 0:
         for file in gzfiles:
             # Generate the new location / filename for the decompressed file. Clunky? Hell yeah!
@@ -106,10 +111,24 @@ def extract_files(verbose=False):
 
             # Delete the compressed file
             os.remove(file)
-
+            files_to_parse = True
+            print(files_to_parse)
     else:
         print("No .gz files")
+
+
+    if files_to_parse:
+        send_files_to_parser()
+
+
+def send_files_to_parser():
+    print("Starting to parse files")
+    for file in glob.glob('unpacked/*.xml'):
+        dmarc_rua_parser(file)
+        os.remove(file)
+
 
 if __name__ == '__main__':
     imap = connect_and_find_new_reports(verbose=True)
     extract_files()
+

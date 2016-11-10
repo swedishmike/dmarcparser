@@ -90,5 +90,6 @@ ENV/
 
 # PYCharm
 .idea/
-
+packed/
+unpacked/
 *.xml

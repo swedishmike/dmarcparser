@@ -83,7 +83,11 @@ def extract_files(target):
     if len(zipfiles) > 0:
         for file in zipfiles:
             print(file)
-            zip_ref = zipfile.ZipFile(file, 'r')
+            try:
+                zip_ref = zipfile.ZipFile(file, 'r')
+            except:
+                print("Something went wrong when opening the file")
+                continue
             zip_ref.extractall(unpackdir)
             zip_ref.close()
             os.remove(file)
@@ -100,7 +104,11 @@ def extract_files(target):
             newfilelocation = unpackdir + outfile
 
             # Decompress the gz file
-            compressedfile = gzip.GzipFile(file)
+            try:
+                compressedfile = gzip.GzipFile(file)
+            except:
+                print("Something went wrong when opening the file")
+                continue
             content = compressedfile.read()
             compressedfile.close()
 

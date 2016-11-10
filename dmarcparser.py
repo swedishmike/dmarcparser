@@ -5,7 +5,7 @@ from modules.imap_connect import extract_files
 from modules.splunk_connector import connect_to_splunk
 from modules.splunk_connector import disconnect_from_splunk
 from modules.splunk_connector import check_for_splunkindex
-__version__ = "0.5"
+__version__ = "0.6"
 
 SplunkHost = os.environ.get('SPLUNKHOST')
 SplunkPort = os.environ.get('SPLUNKPORT')

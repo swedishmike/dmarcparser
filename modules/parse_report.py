@@ -82,7 +82,8 @@ class dmarc_rua_parser:
                        auth_dkim_domain, auth_dkim_result,
                        auth_spf_domain, auth_spf_result))
 
-                print(sourcetype, submitstring)
+                # print("Publishing to Splunk")
+                # print(sourcetype, submitstring)
                 self.publish_to_splunk(sourcetype, submitstring, target)
             else:
                 pass

@@ -40,8 +40,8 @@ def connect_and_find_new_reports(verbose=False):
         typ, data = imap.fetch(number, '(RFC822)')
 
         # print(data)
-        message = email.message_from_bytes(data[0][1])
-        # message = email.message_from_string(data[0][1]) <--- When I move to Python2
+        # message = email.message_from_bytes(data[0][1]) <--- Python3
+        message = email.message_from_string(data[0][1])
         #
         for part in message.walk():
             attach_name = part.get_filename()
@@ -111,6 +111,5 @@ def extract_files(verbose=False):
         print("No .gz files")
 
 if __name__ == '__main__':
-    with connect_and_find_new_reports(verbose=True) as c:
-        # pass
-        extract_files()
+    imap = connect_and_find_new_reports(verbose=True)
+    extract_files()

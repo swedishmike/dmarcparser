@@ -1,0 +1,3 @@
+- Add the logging module
+- Add more error handling
+- Read in configuration from file

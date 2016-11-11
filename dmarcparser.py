@@ -8,7 +8,7 @@ from modules.splunk_connector import check_for_splunkindex
 from modules.logconfig import set_up_logging
 
 
-__version__ = "0.6"
+__version__ = "0.7"
 
 
 SplunkHost = os.environ.get('SPLUNKHOST')
@@ -29,7 +29,7 @@ def initial_healthcheck():
 
 def main():
     global logging
-    print("Dmarc Parser ver", __version__)
+    print("\n\nDmarc Parser ver", __version__, "\n")
     logging = set_up_logging()
     initial_healthcheck()
     imap = connect_and_find_new_reports()

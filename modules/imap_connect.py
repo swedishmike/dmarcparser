@@ -21,7 +21,7 @@ def connect_and_find_new_reports(verbose=False):
     # Connect to the server
     if verbose:
         print('Connecting to', hostname)
-    print "\t[+] Connecting to the IMAP server"
+    print "[*] Connecting to the IMAP server"
     logging.info('Connecting to IMAP server %s', hostname)
     try:
         imap = imaplib.IMAP4_SSL(hostname)
@@ -51,6 +51,9 @@ def connect_and_find_new_reports(verbose=False):
     typ, unread_emails = imap.search(None, 'UNSEEN')
 
     # Loop through emails and grab attachments
+    if len(unread_emails[0].split()) > 0:
+        print("\t[+] Parsing attchments")
+        logging.info('Parsing attachments')
     for number in unread_emails[0].split():
         # Get the current email
         typ, data = imap.fetch(number, '(RFC822)')
@@ -58,7 +61,6 @@ def connect_and_find_new_reports(verbose=False):
         message = email.message_from_string(data[0][1])
         #
         for part in message.walk():
-            print "\t[+] Parsing attachments"
             attach_name = part.get_filename()
             if attach_name:
                 attach_dest = packdir + attach_name
@@ -88,13 +90,13 @@ def connect_and_find_new_reports(verbose=False):
     imap.close()
     imap.logout()
     logging.info('Disconnected from IMAP server')
+    print "[*] Disconnected from IMAP server"
     return imap
 
 def extract_files(target):
     files_to_parse = False
     if len(zipfiles) > 0:
         for file in zipfiles:
-            print(file)
             try:
                 zip_ref = zipfile.ZipFile(file, 'r')
             except:
@@ -105,7 +107,6 @@ def extract_files(target):
             zip_ref.close()
             os.remove(file)
             files_to_parse = True
-            print(files_to_parse)
     else:
         # print("No .zip files")
         pass
@@ -143,11 +144,12 @@ def extract_files(target):
         pass
 
     if files_to_parse:
+        print "[*] Parsing files and publishing to Splunk"
+        logging.info('Starting to parse files.')
         send_files_to_parser(target)
 
 
 def send_files_to_parser(target):
-    print "\t[+] Parsing files"
     # print("Starting to parse files")
     for file in glob.glob('unpacked/*.xml'):
         dmarc_rua_parser(file, target)

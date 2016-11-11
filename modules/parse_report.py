@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as ET
 import datetime
 import sys
+import logging
 
 class dmarc_rua_parser:
     def __init__(self, file_to_parse, target):
@@ -12,7 +13,8 @@ class dmarc_rua_parser:
         try:
             target.submit(submitstring, sourcetype=sourcetype)
         except:
-            print("Could not submit to Splunk", sys.exc_info())
+            print("\t[-] Something unknown went wrong when submitting to Splunk. Exiting.")
+            logging.error('Could not submit to Splunk', exc_info=True)
             sys.exit(1)
 
 
@@ -29,7 +31,8 @@ class dmarc_rua_parser:
             int(report.find('report_metadata/date_range/end').text)).strftime('%Y-%m-%d %H:%M:%S')
 
         all_records = report.findall('record')
-        print("Total records: ", len(all_records))
+        logging.info('File: %s Total Records: %s' % (file_to_parse, len(all_records)))
+        # print("Total records: ", len(all_records))
 
         for record in all_records:
             reportable = False
@@ -91,9 +94,5 @@ class dmarc_rua_parser:
 
 
 if __name__ == '__main__':
-    # file_to_parse = "bzone.it!cloud.sophos.com!0!1478085339.xml"
-    # file_to_parse = "google.com!sophos.com!1477958400!1478044799.xml"
-    # file_to_parse = "rabobank.nl!cloud.sophos.com!1478149205!1478235604.xml"
-    file_to_parse = "yahoo.com!sophos.com!1478044800!1478131199.xml"
-
-    dmarc_rua_parser(file_to_parse)
+    print("This program should not be run on its own, it should be called from dmarcparser.py. Exiting.")
+    sys.exit(1)

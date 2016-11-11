@@ -25,8 +25,7 @@ def connect_to_splunk(SplunkHost, SplunkPort, SplunkUser, SplunkPassword):
         sys.exit(1)
     except:
         print "\t[-] Something unknown went wrong when connecting to Splunk"
-        logging.error('Something went wrong when connecting to Splunk.',
-                      exc_info=True)
+        logging.error('Something went wrong when connecting to Splunk.', exc_info=True)
         sys.exit(1)
     else:
         logging.info('Connected to Splunk.')
@@ -36,7 +35,7 @@ def connect_to_splunk(SplunkHost, SplunkPort, SplunkUser, SplunkPassword):
 def disconnect_from_splunk():
     service.logout()
     logging.info('Disconnected from Splunk')
-    print("\t[+] Disconnected from Splunk.")
+    print("[*] Disconnected from Splunk.")
 
 
 def check_for_splunkindex(SplunkIndex):

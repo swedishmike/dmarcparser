@@ -25,7 +25,6 @@ def initial_healthcheck():
     global target
     connect_to_splunk(SplunkHost, SplunkPort, SplunkUser, SplunkPassword)
     target = check_for_splunkindex(SplunkIndex)
-    print(target)
 
 
 def main():
@@ -33,7 +32,7 @@ def main():
     print("Dmarc Parser ver", __version__)
     logging = set_up_logging()
     initial_healthcheck()
-    imap = connect_and_find_new_reports(verbose=True)
+    imap = connect_and_find_new_reports()
     extract_files(target)
     disconnect_from_splunk()
     logging.info('Exiting the program')

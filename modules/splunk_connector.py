@@ -51,7 +51,6 @@ def check_for_splunkindex(SplunkIndex):
     if SplunkIndex in indexlist:
         print "\t[+] The specified Splunk Index exists"
         target = service.indexes[SplunkIndex]
-        print target
         return target
 
     else:

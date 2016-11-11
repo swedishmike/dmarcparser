@@ -22,6 +22,8 @@ class dmarc_rua_parser:
         tree = ET.parse(file_to_parse)
         report = tree.getroot()
 
+        report_only_failed = False
+
         report_organisation = report.find('report_metadata/org_name').text
         report_id = report.find('report_metadata/report_id').text
         report_contact = report.find('report_metadata/email').text
@@ -35,15 +37,19 @@ class dmarc_rua_parser:
         # print("Total records: ", len(all_records))
 
         for record in all_records:
-            reportable = False
-            if record.find('row/policy_evaluated/dkim').text != "pass":
-                reportable = True
+            if report_only_failed:
+                reportable = False
+                if record.find('row/policy_evaluated/dkim').text != "pass":
+                    reportable = True
+                else:
+                    pass
+                if record.find('row/policy_evaluated/spf').text != "pass":
+                    reportable = True
+                else:
+                    pass
             else:
-                pass
-            if record.find('row/policy_evaluated/spf').text != "pass":
                 reportable = True
-            else:
-                pass
+
             if reportable:
                 sourcetype = "dmarc_rua"
 

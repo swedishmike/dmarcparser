@@ -8,19 +8,15 @@ import logging
 from parse_report import dmarc_rua_parser
 
 
-hostname = os.environ.get('IMAPSERVER')
-username = os.environ.get('IMAP_USER')
-password = os.environ.get('IMAP_PASSWORD')
+
 zipfiles = []
 gzfiles = []
 packdir = "packed/"
 unpackdir = "unpacked/"
 
 
-def connect_and_find_new_reports(verbose=False):
+def connect_and_find_new_reports(hostname, username, password):
     # Connect to the server
-    if verbose:
-        print('Connecting to', hostname)
     print "[*] Connecting to the IMAP server"
     logging.info('Connecting to IMAP server %s', hostname)
     try:
@@ -30,8 +26,6 @@ def connect_and_find_new_reports(verbose=False):
         logging.error('Something went wrong when connecting to the IMAP server.', exc_info=True)
 
     # Login to our account
-    if verbose:
-        print('Logging in as', username)
     try:
         imap.login(username, password)
     except:
@@ -93,7 +87,7 @@ def connect_and_find_new_reports(verbose=False):
     print "[*] Disconnected from IMAP server"
     return imap
 
-def extract_files(target):
+def extract_files(target, parse_only_failed):
     files_to_parse = False
     if len(zipfiles) > 0:
         for file in zipfiles:
@@ -146,13 +140,13 @@ def extract_files(target):
     if files_to_parse:
         print "[*] Parsing files and publishing to Splunk"
         logging.info('Starting to parse files.')
-        send_files_to_parser(target)
+        send_files_to_parser(target, parse_only_failed)
 
 
-def send_files_to_parser(target):
+def send_files_to_parser(target, parse_only_failed):
     # print("Starting to parse files")
     for file in glob.glob('unpacked/*.xml'):
-        dmarc_rua_parser(file, target)
+        dmarc_rua_parser(file, target, parse_only_failed)
         os.remove(file)
 
 

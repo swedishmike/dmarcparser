@@ -93,3 +93,4 @@ ENV/
 packed/
 unpacked/
 *.xml
+*.ini

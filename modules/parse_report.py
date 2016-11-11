@@ -4,10 +4,10 @@ import sys
 import logging
 
 class dmarc_rua_parser:
-    def __init__(self, file_to_parse, target):
+    def __init__(self, file_to_parse, target, report_only_failed):
         self.file_to_parse = file_to_parse
         self.target = target
-        self.parse_rua_file(self.file_to_parse, target)
+        self.parse_rua_file(self.file_to_parse, target, report_only_failed)
 
     def publish_to_splunk(self, sourcetype, submitstring, target):
         try:
@@ -18,11 +18,9 @@ class dmarc_rua_parser:
             sys.exit(1)
 
 
-    def parse_rua_file(self, file_to_parse, target):
+    def parse_rua_file(self, file_to_parse, target, report_only_failed):
         tree = ET.parse(file_to_parse)
         report = tree.getroot()
-
-        report_only_failed = False
 
         report_organisation = report.find('report_metadata/org_name').text
         report_id = report.find('report_metadata/report_id').text

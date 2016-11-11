@@ -1,1 +1,0 @@
-- Sort out that it checks for the packed and unpacked directories and creates if necessary

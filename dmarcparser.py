@@ -23,7 +23,10 @@ def read_in_configfile():
         parser.read('dmarcparser.ini')
     except:
         print("\t[-] Could not find the configuration file dmarcparser.ini")
+        logging.info('Could not find the configuration file.')
         sys.exit(1)
+
+
     try:
         SplunkHost = parser.get('Splunk Config', 'SplunkHost')
         SplunkPort = parser.get('Splunk Config', 'SplunkPort')
@@ -34,9 +37,6 @@ def read_in_configfile():
         username = parser.get('Imap Config', 'ImapUser')
         password = parser.get('Imap Config', 'ImapPassword')
         parse_only_failed = parser.get('dmarcparser', 'ReportOnlyFailed')
-
-
-
     except:
         print("\t[-] Missing or incorrect value in dmarcparser.ini. Exiting.")
         logging.error('Could not find a specific variable in dmarcparser.ini', exc_info=True)

@@ -1,5 +1,6 @@
 import imaplib
 import os
+import sys
 import email
 import zipfile
 import gzip
@@ -68,7 +69,7 @@ def connect_and_find_new_reports(hostname, username, password):
                 try:
                     attach_data = email.base64mime.decode(part.get_payload())
                 except binascii.Error:
-                    print("Could not decode attachment")
+                    # print("Could not decode attachment")
                     logging.info('Could not decode attachment "{0}"'.format(attach_name))
                     continue
 
@@ -88,6 +89,21 @@ def connect_and_find_new_reports(hostname, username, password):
     return imap
 
 def extract_files(target, parse_only_failed):
+    if not os.path.exists(unpackdir):
+        try:
+            os.makedirs(unpackdir)
+        except:
+            logging.error('Could not create directory', exc_info=True)
+            print("\t[-] Could not create a necessary directory.")
+            sys.exit(1)
+    if not os.path.exists(packdir):
+        try:
+            os.makedirs(packdir)
+        except:
+            logging.error('Could not create directory', exc_info=True)
+            print("\t[-] Could not create a necessary directory.")
+            sys.exit(1)
+
     files_to_parse = False
     if len(zipfiles) > 0:
         for file in zipfiles:

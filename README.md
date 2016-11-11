@@ -15,7 +15,7 @@ Reads the emails from IMAP, transmogrifies the data and outputs it to Splunk. Si
 
 ### Installation
 - Clone this repo onto your host
-- Change direcotory into the program directory and run `pip install -r requirements.txt`
+- Change directory into the program directory and run `pip install -r requirements.txt`
 
 ### Configuration
 
@@ -59,5 +59,5 @@ If you need even more logging, edit the file `modules/logconfig.py` and in the s
             }
 ~~~~
 
-For any other problems or bugs - open an issue here on Github and I'll try to assist.
+For any other problems or bugs - open an issue here on Github and I'll try to assist. Pull requests are of course also very welcome.
 ###### Disclaimer: This program does not come with any guarantees that it will actually work. Best efforts will be made to make it work as well as possible though.

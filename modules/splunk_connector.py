@@ -1,11 +1,13 @@
 import sys
 import splunklib.client as client
+import logging
 import os
 
 
 def connect_to_splunk(SplunkHost, SplunkPort, SplunkUser, SplunkPassword):
     """ Sets up the connection to the Splunk instance """
     global service
+    logging.info('Connecting to Splunk')
     print "[*] Connecting to Splunk"
     try:
         service = client.connect(
@@ -27,12 +29,14 @@ def connect_to_splunk(SplunkHost, SplunkPort, SplunkUser, SplunkPassword):
                       exc_info=True)
         sys.exit(1)
     else:
+        logging.info('Connected to Splunk.')
         print "\t[+] Connected to Splunk"
 
 
 def disconnect_from_splunk():
     service.logout()
-    print("Disconnected from Splunk.")
+    logging.info('Disconnected from Splunk')
+    print("\t[+] Disconnected from Splunk.")
 
 
 def check_for_splunkindex(SplunkIndex):

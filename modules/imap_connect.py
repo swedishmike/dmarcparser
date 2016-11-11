@@ -27,7 +27,7 @@ def connect_and_find_new_reports(verbose=False):
         imap = imaplib.IMAP4_SSL(hostname)
     except:
         print "\t[-] Connection to the IMAP server failed - check your settings"
-        logging.error('Something went wrong when connecting to Splunk.', exc_info=True)
+        logging.error('Something went wrong when connecting to the IMAP server.', exc_info=True)
 
     # Login to our account
     if verbose:
@@ -36,14 +36,14 @@ def connect_and_find_new_reports(verbose=False):
         imap.login(username, password)
     except:
         print "\t[-] Connection to the IMAP server failed - check your settings"
-        logging.error('Something went wrong when connecting to Splunk.', exc_info=True)
+        logging.error('Something went wrong when connecting to the IMAP server.', exc_info=True)
 
     # Select the Inbox
     try:
         imap.select('INBOX')
     except:
         print "\t[-] Connection to the IMAP server failed - check your settings"
-        logging.error('Something went wrong when connecting to Splunk.', exc_info=True)
+        logging.error('Something went wrong when connecting to IMAP server.', exc_info=True)
 
     # Look for unread emails
     print "\t[+] Checking for unread emails"

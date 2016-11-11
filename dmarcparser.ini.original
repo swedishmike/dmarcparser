@@ -1,0 +1,14 @@
+[Splunk Config]
+SplunkHost =
+SplunkPort =
+SplunkUser =
+SplunkPassword =
+SplunkIndex =
+
+[Imap Config]
+ImapServer =
+ImapUser =
+ImapPassword =
+
+ [dmarcparser]
+ ReportOnlyFailed = True

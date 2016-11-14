@@ -149,7 +149,7 @@ def extract_files(target, parse_only_failed):
             decompressedfile.close()
 
             # Delete the compressed file
-            # os.remove(file)
+            os.remove(file)
             files_to_parse = True
     else:
         # print("No .gz files")
@@ -165,7 +165,7 @@ def send_files_to_parser(target, parse_only_failed):
     # print("Starting to parse files")
     for file in glob.glob('unpacked/*.xml'):
         dmarc_rua_parser(file, target, parse_only_failed)
-        # os.remove(file)
+        os.remove(file)
 
 
 if __name__ == '__main__':

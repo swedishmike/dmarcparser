@@ -36,7 +36,7 @@ def read_in_configfile():
         hostname = parser.get('Imap Config', 'ImapServer')
         username = parser.get('Imap Config', 'ImapUser')
         password = parser.get('Imap Config', 'ImapPassword')
-        parse_only_failed = parser.get('dmarcparser', 'ReportOnlyFailed')
+        parse_only_failed = parser.getboolean('dmarcparser', 'ReportOnlyFailed')
     except:
         print("\t[-] Missing or incorrect value in dmarcparser.ini. Exiting.")
         logging.error('Could not find a specific variable in dmarcparser.ini', exc_info=True)

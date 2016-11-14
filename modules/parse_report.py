@@ -11,7 +11,7 @@ class dmarc_rua_parser:
     def __init__(self, file_to_parse, target):
         self.file_to_parse = file_to_parse
         self.target = target
-        self.parse_rua_file(self.file_to_parse, target, report_only_failed)
+        self.parse_rua_file(self.file_to_parse, target)
 
     def publish_to_splunk(self, sourcetype, submitstring, target):
         try:
@@ -45,6 +45,7 @@ class dmarc_rua_parser:
             # print("Total records: ", len(all_records))
 
             for record in all_records:
+
                 sourcetype = "dmarc_rua"
 
 
@@ -100,13 +101,13 @@ class dmarc_rua_parser:
                        source_ip, header_from, policy_dkim,policy_spf, auth_dkim_domain, auth_dkim_result,
                        auth_spf_domain, auth_spf_result))
 
-                    # print("Publishing to Splunk")
-                    # print(sourcetype, submitstring)
-                    self.publish_to_splunk(sourcetype, submitstring, target)
-                else:
-                    pass
+                # print("Publishing to Splunk")
+                # print(sourcetype, submitstring)
+                self.publish_to_splunk(sourcetype, submitstring, target)
             else:
                 pass
+        else:
+            pass
 
 
 if __name__ == '__main__':

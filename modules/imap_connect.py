@@ -117,7 +117,7 @@ def extract_zip_file(file, target):
     return
 
 
-def extract_gz_file(file, parse_only_failed, target):
+def extract_gz_file(file, target):
     directory, filename = os.path.split(file)
     xmlfile, extension = os.path.splitext(filename)
     newfilelocation = unpackdir + xmlfile
@@ -141,7 +141,7 @@ def extract_gz_file(file, parse_only_failed, target):
 
     # Delete the compressed file
     os.remove(file)
-    send_files_to_parser(target, parse_only_failed)
+    send_files_to_parser(target)
     return
 
 

@@ -16,7 +16,7 @@ packdir = "packed/"
 unpackdir = "unpacked/"
 
 
-def connect_and_find_new_reports(hostname, username, password, parse_only_failed, target):
+def connect_and_find_new_reports(hostname, username, password, target):
     # Check if the necessary directories are there, if not - create them
     if not os.path.exists(unpackdir):
         try:
@@ -65,12 +65,6 @@ def connect_and_find_new_reports(hostname, username, password, parse_only_failed
     if len(unread_emails[0].split()) > 0:
         print("\t[+] Parsing attachments")
         logging.info('Parsing attachments')
-        if not parse_only_failed:
-            print("\t\t[+] Parsing all records")
-            logging.info('Parsing all records')
-        else:
-            print("\t\t[+] Only parsing failed records")
-            logging.info('Only parsing failed records')
     for number in unread_emails[0].split():
         # Get the current email
         typ, data = imap.fetch(number, '(RFC822)')
@@ -99,9 +93,9 @@ def connect_and_find_new_reports(hostname, username, password, parse_only_failed
                             logging.error('File already exists %s', attach_dest)
                         logging.error('Could not write %s', attach_data, exc_info=True)
                 if attach_name.endswith('.zip'):
-                    extract_zip_file(attach_dest, parse_only_failed, target)
+                    extract_zip_file(attach_dest, target)
                 else:
-                    extract_gz_file(attach_dest, parse_only_failed, target)
+                    extract_gz_file(attach_dest, target)
     imap.close()
     imap.logout()
     logging.info('Disconnected from IMAP server')
@@ -109,7 +103,7 @@ def connect_and_find_new_reports(hostname, username, password, parse_only_failed
     return imap
 
 
-def extract_zip_file(file, parse_only_failed, target):
+def extract_zip_file(file, target):
     try:
         zip_ref = zipfile.ZipFile(file, 'r')
     except:
@@ -119,7 +113,7 @@ def extract_zip_file(file, parse_only_failed, target):
     zip_ref.extractall(unpackdir)
     zip_ref.close()
     os.remove(file)
-    send_files_to_parser(target, parse_only_failed)
+    send_files_to_parser(target)
     return
 
 
@@ -151,11 +145,11 @@ def extract_gz_file(file, parse_only_failed, target):
     return
 
 
-def send_files_to_parser(target, parse_only_failed):
+def send_files_to_parser(target):
     # print("Starting to parse files")
     if len (glob.glob('unpacked/*.xml')) > 0:
         for file in glob.glob('unpacked/*.xml'):
-            dmarc_rua_parser(file, target, parse_only_failed)
+            dmarc_rua_parser(file, target)
             os.remove(file)
     else:
         print("No files to parse")

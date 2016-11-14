@@ -10,5 +10,3 @@ ImapServer =
 ImapUser =
 ImapPassword =
 
-[dmarcparser]
-ReportOnlyFailed = True

@@ -8,7 +8,7 @@ import logging
 
 
 class dmarc_rua_parser:
-    def __init__(self, file_to_parse, target, report_only_failed):
+    def __init__(self, file_to_parse, target):
         self.file_to_parse = file_to_parse
         self.target = target
         self.parse_rua_file(self.file_to_parse, target, report_only_failed)
@@ -22,7 +22,7 @@ class dmarc_rua_parser:
             sys.exit(1)
 
 
-    def parse_rua_file(self, file_to_parse, target, report_only_failed):
+    def parse_rua_file(self, file_to_parse, target):
         good_to_go = False
         try:
             tree = ET.parse(file_to_parse)
@@ -45,82 +45,60 @@ class dmarc_rua_parser:
             # print("Total records: ", len(all_records))
 
             for record in all_records:
-                if report_only_failed:
-                    reportable = False
-                    try:
-                        if record.find('row/policy_evaluated/dkim').text != "pass":
-                            reportable = True
-                        else:
-                            pass
-                    except:
-                        logging.error("DKIM record missing in %s" % file_to_parse)
-                        continue
-                    try:
-                        if record.find('row/policy_evaluated/spf').text != "pass":
-                            reportable = True
-                        else:
-                            pass
-                    except:
-                        logging.error("SPF record missing in %s" % file_to_parse)
-                        continue
-                else:
-                    reportable = True
-
-                if reportable:
-                    sourcetype = "dmarc_rua"
+                sourcetype = "dmarc_rua"
 
 
-                    try:
-                        source_ip = record.find('row/source_ip').text
-                    except:
-                        source_ip = "None"
-                    try:
-                        header_from = record.find('identifiers/header_from').text
-                    except:
-                        header_from = "None"
-                    try:
-                        policy_dkim = record.find('row/policy_evaluated/dkim').text
-                    except:
-                        policy_dkim = "Missing"
-                    try:
-                        policy_spf = record.find('row/policy_evaluated/spf').text
-                    except:
-                        policy_spf = "Missing"
-                    try:
-                        auth_dkim_domain = record.find('auth_results/dkim/domain').text
-                    except:
-                        auth_dkim_domain = "None"
-                    try:
-                        auth_spf_domain = record.find('auth_results/spf/domain').text
-                    except:
-                        auth_spf_domain = "None"
-                    try:
-                        auth_dkim_result = record.find('auth_results/dkim/result').text
-                    except:
-                        auth_dkim_result = "None"
-                    try:
-                        auth_spf_result = record.find('auth_results/spf/result').text
-                    except:
-                        auth_spf_result = "None"
+                try:
+                    source_ip = record.find('row/source_ip').text
+                except:
+                    source_ip = "None"
+                try:
+                    header_from = record.find('identifiers/header_from').text
+                except:
+                    header_from = "None"
+                try:
+                    policy_dkim = record.find('row/policy_evaluated/dkim').text
+                except:
+                    policy_dkim = "Missing"
+                try:
+                    policy_spf = record.find('row/policy_evaluated/spf').text
+                except:
+                    policy_spf = "Missing"
+                try:
+                    auth_dkim_domain = record.find('auth_results/dkim/domain').text
+                except:
+                    auth_dkim_domain = "None"
+                try:
+                    auth_spf_domain = record.find('auth_results/spf/domain').text
+                except:
+                    auth_spf_domain = "None"
+                try:
+                    auth_dkim_result = record.find('auth_results/dkim/result').text
+                except:
+                    auth_dkim_result = "None"
+                try:
+                    auth_spf_result = record.find('auth_results/spf/result').text
+                except:
+                    auth_spf_result = "None"
 
 
-                    submitstring = (
-                        "org_name=\"%s\" "
-                        "contact=\"%s\" "
-                        "report_id=\"%s\" "
-                        "report_startdate=\"%s\" "
-                        "report_enddate=\"%s\" "
-                        "srcip=\"%s\" "
-                        "header_from=\"%s\" "
-                        "policy_dkim=\"%s\" "
-                        "policy_spf=\"%s\" "
-                        "dkim_domain=\"%s\" "
-                        "dkim_result=\"%s\" "
-                        "spf_domain=\"%s\" "
-                        "spf_result=\"%s\" "
-                        % (report_organisation, report_contact, report_id, report_startdate, report_enddate,
-                           source_ip, header_from, policy_dkim,policy_spf, auth_dkim_domain, auth_dkim_result,
-                           auth_spf_domain, auth_spf_result))
+                submitstring = (
+                    "org_name=\"%s\" "
+                    "contact=\"%s\" "
+                    "report_id=\"%s\" "
+                    "report_startdate=\"%s\" "
+                    "report_enddate=\"%s\" "
+                    "srcip=\"%s\" "
+                    "header_from=\"%s\" "
+                    "policy_dkim=\"%s\" "
+                    "policy_spf=\"%s\" "
+                    "dkim_domain=\"%s\" "
+                    "dkim_result=\"%s\" "
+                    "spf_domain=\"%s\" "
+                    "spf_result=\"%s\" "
+                    % (report_organisation, report_contact, report_id, report_startdate, report_enddate,
+                       source_ip, header_from, policy_dkim,policy_spf, auth_dkim_domain, auth_dkim_result,
+                       auth_spf_domain, auth_spf_result))
 
                     # print("Publishing to Splunk")
                     # print(sourcetype, submitstring)

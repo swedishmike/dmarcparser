@@ -162,5 +162,5 @@ def send_files_to_parser(target, parse_only_failed):
 
 
 if __name__ == '__main__':
-    imap = connect_and_find_new_reports(verbose=True)
-    extract_files(target)
+    print("This program should not be run on its own, it should be called from dmarcparser.py. Exiting.")
+    sys.exit(1)

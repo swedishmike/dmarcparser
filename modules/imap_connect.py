@@ -70,7 +70,7 @@ def connect_and_find_new_reports(hostname, username, password):
                     attach_data = email.base64mime.decode(part.get_payload())
                 except binascii.Error:
                     # print("Could not decode attachment")
-                    logging.info('Could not decode attachment "{0}"'.format(attach_name))
+                    logging.error('Could not decode attachment "{0}"'.format(attach_name))
                     continue
 
                 with open(attach_dest, "wb") as fd:
@@ -78,7 +78,7 @@ def connect_and_find_new_reports(hostname, username, password):
                         fd.write(attach_data)
                     except:
                         logging.error('Could not write %s', attach_data, exc_info=True)
-                if attach_name.endswith('zip'):
+                if attach_name.endswith('.zip'):
                     zipfiles.append(attach_dest)
                 else:
                     gzfiles.append(attach_dest)

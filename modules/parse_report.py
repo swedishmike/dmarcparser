@@ -71,13 +71,21 @@ class dmarc_rua_parser:
 
 
                     try:
+                        source_ip = record.find('row/source_ip').text
+                    except:
+                        source_ip = "None"
+                    try:
+                        header_from = record.find('identifiers/header_from').text
+                    except:
+                        header_from = "None"
+                    try:
                         policy_dkim = record.find('row/policy_evaluated/dkim').text
                     except:
                         policy_dkim = "Missing"
                     try:
                         policy_spf = record.find('row/policy_evaluated/spf').text
                     except:
-                        policy_spf = "Missing
+                        policy_spf = "Missing"
                     try:
                         auth_dkim_domain = record.find('auth_results/dkim/domain').text
                     except:
@@ -111,8 +119,8 @@ class dmarc_rua_parser:
                         "spf_domain=\"%s\" "
                         "spf_result=\"%s\" "
                         % (report_organisation, report_contact, report_id, report_startdate, report_enddate,
-                           record.find('row/source_ip').text, record.find('identifiers/header_from').text,
-                           policy_dkim,policy_spf, auth_dkim_domain, auth_dkim_result, auth_spf_domain, auth_spf_result))
+                           source_ip, header_from, policy_dkim,policy_spf, auth_dkim_domain, auth_dkim_result,
+                           auth_spf_domain, auth_spf_result))
 
                     # print("Publishing to Splunk")
                     # print(sourcetype, submitstring)

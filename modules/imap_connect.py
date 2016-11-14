@@ -16,7 +16,23 @@ packdir = "packed/"
 unpackdir = "unpacked/"
 
 
-def connect_and_find_new_reports(hostname, username, password):
+def connect_and_find_new_reports(hostname, username, password, parse_only_failed, target):
+    # Check if the necessary directories are there, if not - create them
+    if not os.path.exists(unpackdir):
+        try:
+            os.makedirs(unpackdir)
+        except:
+            logging.error('Could not create directory', exc_info=True)
+            print("\t[-] Could not create a necessary directory.")
+            sys.exit(1)
+    if not os.path.exists(packdir):
+        try:
+            os.makedirs(packdir)
+        except:
+            logging.error('Could not create directory', exc_info=True)
+            print("\t[-] Could not create a necessary directory.")
+            sys.exit(1)
+
     # Connect to the server
     print "[*] Connecting to the IMAP server"
     logging.info('Connecting to IMAP server %s', hostname)
@@ -62,14 +78,9 @@ def connect_and_find_new_reports(hostname, username, password):
                 if not (attach_name.endswith('.zip') or attach_name.endswith('.gz')):
                     logging.info('Ignoring non-zip or non-gz attachment "{0}"'.format(attach_name))
                     continue
-                # if not attach_name.endswith('.gz'):
-                #     print("Don't have a .gz file attached")
-                #     # log('ignoring non-zip attachment "{0}"'.format(attach_name))
-                #     passdiur
                 try:
-                    attach_data = email.base64mime.decode(part.get_payload())
+                    attach_data = part.get_payload(decode=True)
                 except binascii.Error:
-                    # print("Could not decode attachment")
                     logging.error('Could not decode attachment "{0}"'.format(attach_name))
                     continue
 
@@ -77,98 +88,73 @@ def connect_and_find_new_reports(hostname, username, password):
                     try:
                         fd.write(attach_data)
                     except:
+                        print("Attachment data:", attach_data)
+                        if os.path.isfile(attach_dest):
+                            logging.error('File already exists %s', attach_dest)
                         logging.error('Could not write %s', attach_data, exc_info=True)
                 if attach_name.endswith('.zip'):
-                    zipfiles.append(attach_dest)
+                    extract_zip_file(attach_dest, parse_only_failed, target)
                 else:
-                    gzfiles.append(attach_dest)
+                    extract_gz_file(attach_dest, parse_only_failed, target)
     imap.close()
     imap.logout()
     logging.info('Disconnected from IMAP server')
-    for file in glob.glob('packed/*.gz'):
-        print(file)
     print "[*] Disconnected from IMAP server"
     return imap
 
-def extract_files(target, parse_only_failed):
-    if not os.path.exists(unpackdir):
-        try:
-            os.makedirs(unpackdir)
-        except:
-            logging.error('Could not create directory', exc_info=True)
-            print("\t[-] Could not create a necessary directory.")
-            sys.exit(1)
-    if not os.path.exists(packdir):
-        try:
-            os.makedirs(packdir)
-        except:
-            logging.error('Could not create directory', exc_info=True)
-            print("\t[-] Could not create a necessary directory.")
-            sys.exit(1)
 
-    files_to_parse = False
-    if len(zipfiles) > 0:
-        for file in zipfiles:
-            try:
-                zip_ref = zipfile.ZipFile(file, 'r')
-            except:
-                # print("Something went wrong when opening the file")
-                logging.error('Something went wrong when opening a file', exc_info=True)
-                continue
-            zip_ref.extractall(unpackdir)
-            zip_ref.close()
-            os.remove(file)
-            files_to_parse = True
-    else:
-        # print("No .zip files")
+def extract_zip_file(file, parse_only_failed, target):
+    try:
+        zip_ref = zipfile.ZipFile(file, 'r')
+    except:
+            # print("Something went wrong when opening the file")
+            logging.error('Something went wrong when opening a file', exc_info=True)
+            pass
+    zip_ref.extractall(unpackdir)
+    zip_ref.close()
+    os.remove(file)
+    send_files_to_parser(target, parse_only_failed)
+    return
+
+
+def extract_gz_file(file, parse_only_failed, target):
+    directory, filename = os.path.split(file)
+    xmlfile, extension = os.path.splitext(filename)
+    newfilelocation = unpackdir + xmlfile
+    # Decompress the gz file
+    try:
+        compressedfile = gzip.GzipFile(file)
+    except:
+        # print("Something went wrong when opening the file")
+        logging.error('Something went wrong when opening a file', exc_info=True)
         pass
+    content = compressedfile.read()
+    compressedfile.close()
 
+    # Write the new decompressed file in the unpack directory
+    decompressedfile = open(newfilelocation, 'wb')
+    try:
+        decompressedfile.write(content)
+    except:
+        logging.error('Something went wrong when saving a file', exc_info=True)
+    decompressedfile.close()
 
-    if len(gzfiles) > 0:
-        for file in gzfiles:
-            # Generate the new location / filename for the decompressed file. Clunky? Hell yeah!
-            directory, filename = os.path.split(file)
-            xmlfile, extension = os.path.splitext(filename)
-            newfilelocation = unpackdir + xmlfile
-            # Decompress the gz file
-            try:
-                compressedfile = gzip.GzipFile(file)
-            except:
-                # print("Something went wrong when opening the file")
-                logging.error('Something went wrong when opening a file', exc_info=True)
-                continue
-            content = compressedfile.read()
-            compressedfile.close()
-
-            # Write the new decompressed file in the unpack directory
-            decompressedfile = open(newfilelocation, 'wb')
-            try:
-                decompressedfile.write(content)
-            except:
-                logging.error('Something went wrong when saving a file', exc_info=True)
-            decompressedfile.close()
-
-            # Delete the compressed file
-            os.remove(file)
-            files_to_parse = True
-    else:
-        # print("No .gz files")
-        pass
-
-    if files_to_parse:
-        print "[*] Parsing files and publishing to Splunk"
-        logging.info('Starting to parse files.')
-        send_files_to_parser(target, parse_only_failed)
+    # Delete the compressed file
+    os.remove(file)
+    send_files_to_parser(target, parse_only_failed)
+    return
 
 
 def send_files_to_parser(target, parse_only_failed):
     # print("Starting to parse files")
-    for file in glob.glob('unpacked/*.xml'):
-        dmarc_rua_parser(file, target, parse_only_failed)
-        os.remove(file)
+    if len (glob.glob('unpacked/*.xml')) > 0:
+        for file in glob.glob('unpacked/*.xml'):
+            dmarc_rua_parser(file, target, parse_only_failed)
+            os.remove(file)
+    else:
+        print("No files to parse")
 
 
 if __name__ == '__main__':
     imap = connect_and_find_new_reports(verbose=True)
     extract_files(target)
-

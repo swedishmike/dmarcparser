@@ -1,7 +1,11 @@
 import xml.etree.ElementTree as ET
 import datetime
 import sys
+import os
 import logging
+
+
+
 
 class dmarc_rua_parser:
     def __init__(self, file_to_parse, target, report_only_failed):
@@ -19,13 +23,13 @@ class dmarc_rua_parser:
 
 
     def parse_rua_file(self, file_to_parse, target, report_only_failed):
+        good_to_go = False
         try:
             tree = ET.parse(file_to_parse)
             good_to_go = True
         except:
-            logging.error("Error opening and parsing %s" % file_to_parse, exc_info=True)
-            good_to_go = False
-
+            print good_to_go
+            logging.error("Error opening and parsing %s. Most likely malformed XML." % file_to_parse)
         if good_to_go:
             report = tree.getroot()
 

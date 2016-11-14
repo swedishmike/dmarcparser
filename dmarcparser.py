@@ -4,7 +4,7 @@ import sys
 # from modules.parseconfig import read_in_configfile
 from ConfigParser import SafeConfigParser
 from modules.imap_connect import connect_and_find_new_reports
-from modules.imap_connect import extract_files
+from modules.imap_connect import send_files_to_parser
 from modules.splunk_connector import connect_to_splunk
 from modules.splunk_connector import disconnect_from_splunk
 from modules.splunk_connector import check_for_splunkindex
@@ -53,13 +53,13 @@ def initial_healthcheck():
 
 def main():
     global logging
+
     print("\n\nDmarc Parser ver", __version__, "\n")
     logging = set_up_logging()
     logging.info('Starting the program')
     read_in_configfile()
     initial_healthcheck()
-    imap = connect_and_find_new_reports(hostname, username, password)
-    extract_files(target, parse_only_failed)
+    imap = connect_and_find_new_reports(hostname, username, password, parse_only_failed, target)
     disconnect_from_splunk()
     logging.info('Exiting the program')
 

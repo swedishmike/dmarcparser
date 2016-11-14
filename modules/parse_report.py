@@ -28,7 +28,6 @@ class dmarc_rua_parser:
             tree = ET.parse(file_to_parse)
             good_to_go = True
         except:
-            print good_to_go
             logging.error("Error opening and parsing %s. Most likely malformed XML." % file_to_parse)
         if good_to_go:
             report = tree.getroot()

@@ -65,9 +65,9 @@ def connect_and_find_new_reports(hostname, username, password, parse_only_failed
     if len(unread_emails[0].split()) > 0:
         print("\t[+] Parsing attachments")
         logging.info('Parsing attachments')
-    if not parse_only_failed:
-        print("\t\t[+] Parsing all records, not only failed ones")
-        logging.info('Parsing all records.')
+        if not parse_only_failed:
+            print("\t\t[+] Parsing all records, not only failed ones")
+            logging.info('Parsing all records.')
     for number in unread_emails[0].split():
         # Get the current email
         typ, data = imap.fetch(number, '(RFC822)')

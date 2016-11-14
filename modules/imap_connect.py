@@ -85,6 +85,8 @@ def connect_and_find_new_reports(hostname, username, password):
     imap.close()
     imap.logout()
     logging.info('Disconnected from IMAP server')
+    for file in glob.glob('packed/*.gz'):
+        print(file)
     print "[*] Disconnected from IMAP server"
     return imap
 

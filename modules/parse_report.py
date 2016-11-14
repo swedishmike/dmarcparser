@@ -7,7 +7,6 @@ class dmarc_rua_parser:
     def __init__(self, file_to_parse, target, report_only_failed):
         self.file_to_parse = file_to_parse
         self.target = target
-        print(self.file_to_parse)
         self.parse_rua_file(self.file_to_parse, target, report_only_failed)
 
     def publish_to_splunk(self, sourcetype, submitstring, target):

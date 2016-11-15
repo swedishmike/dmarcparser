@@ -41,7 +41,7 @@ class dmarc_rua_parser:
                 int(report.find('report_metadata/date_range/end').text)).strftime('%Y-%m-%d %H:%M:%S')
 
             all_records = report.findall('record')
-            logging.debug('File: %s Total Records: %s' % (file_to_parse, len(all_records)))
+            logging.info('File: %s Total Records: %s' % (file_to_parse, len(all_records)))
             # print("Total records: ", len(all_records))
 
             for record in all_records:

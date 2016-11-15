@@ -17,6 +17,23 @@ Reads the emails from IMAP, transmogrifies the data and outputs it to Splunk. Si
 - Clone this repo onto your host
 - Change directory into the program directory and run `pip install -r requirements.txt`
 
+You can of course run this manually but I find that running it automagically is the best way. One way of accomplishing
+this on Linux/Unix is as follows:
+ - Create a file called `dmarcparser.sh` in the same directory as the `dmarcparser.py` file.
+ - Edit that file to contain something like this:
+ ~~~~
+ #!/bin/sh
+ python2.7 dnarcparser.py
+ ~~~~
+ - Once the file is created and saved, make sure to run `chmod +x dmarcparser.sh` to make sure that it is executable.
+ - Then, as a user that have access to the dmarcparser directory and also can create and run crontab entries execute
+ `crontab -e` and add a line looking something like this, of course adjusted to suit your host/directories etc:
+ ~~~~
+0 * * * * /home/user/Projects/dmarcparser/dmarcparser.sh
+ ~~~~
+ - The line above executes the script on the hour, every hour. As always, mileage may vary so you might have to adjust
+ these things to suit your system. At least it should give you an idea of what you can do to get it scheduled.
+ 
 ### Configuration
 
 Copy the `dmarcparser.ini.original` file to `dmarcparser.ini` and edit the following settings to suit your environment.
@@ -37,12 +54,7 @@ ImapUser =
 ImapPassword =
 ~~~~
 
-~~~~
-[dmarcparser]
-ReportOnlyFailed = True
-~~~~
-
-These settings should be pretty self explanatory with the possible exception of `ReportOnlyFailed`. If that is set to `False` it will parse and transfer all entries in the reports, not only failed ones. That way you have all the data in Splunk and can do your own parsing instead of relying on the parsing in this program.
+These settings should be pretty self explanatory. 
 
 ## Troubleshooting
 

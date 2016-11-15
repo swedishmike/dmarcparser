@@ -71,5 +71,21 @@ If you need even more logging, edit the file `modules/logconfig.py` and in the s
             }
 ~~~~
 
+## Known issues
+
+### Incorrect XML
+Some implementations seems to have incorrect XML syntax in them, which is not liked be the XML parser I'm using. There
+might be a way around this but I really can't be bothered to spend too much time on it. Each one of these will be caught
+by an exception and logges like this instead:
+
+~~~~
+2016-11-14 17:06:38,296 [ERROR] (parse_report): Error opening and parsing unpacked/emailgate.se!sophos.com!1478646000!1478732400.xml. Most likely malformed XML.
+~~~~
+
+### Missing DKIM or SPF result entry
+Some implementations seems to not include both the `Policy evaluated/dkim` and `Policy evaluated/spf` records. If that
+is the case I add in the value of `Missing` instead of crashing out and/or leaving it empty.
+
+
 For any other problems or bugs - open an issue here on Github and I'll try to assist. Pull requests are of course also very welcome.
 ###### Disclaimer: This program does not come with any guarantees that it will actually work. Best efforts will be made to make it work as well as possible though.

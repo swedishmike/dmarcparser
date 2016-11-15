@@ -1,7 +1,7 @@
 # dmarcparser
 A quick and dirty implementation to get DMARC rua reports into Splunk for further analysis
 
-Reads the emails from IMAP, transmogrifies the data and outputs it to Splunk. Simples.
+Reads the emails from IMAP, transmogrifies the data and outputs it into Splunk. Simples.
 
 ## Requirements
 
@@ -21,16 +21,16 @@ You can of course run this manually but I find that running it automagically is 
 this on Linux/Unix is as follows:
  - Create a file called `dmarcparser.sh` in the same directory as the `dmarcparser.py` file.
  - Edit that file to contain something like this:
- ~~~~
+~~~~
  #!/bin/sh
- python2.7 dnarcparser.py
- ~~~~
+ python2.7 dmarcparser.py
+~~~~
  - Once the file is created and saved, make sure to run `chmod +x dmarcparser.sh` to make sure that it is executable.
  - Then, as a user that have access to the dmarcparser directory and also can create and run crontab entries execute
  `crontab -e` and add a line looking something like this, of course adjusted to suit your host/directories etc:
- ~~~~
+~~~~
 0 * * * * /home/user/Projects/dmarcparser/dmarcparser.sh
- ~~~~
+~~~~
  - The line above executes the script on the hour, every hour. As always, mileage may vary so you might have to adjust
  these things to suit your system. At least it should give you an idea of what you can do to get it scheduled.
  

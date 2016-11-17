@@ -30,6 +30,7 @@ def connect_to_splunk(SplunkHost, SplunkPort, SplunkUser, SplunkPassword):
     else:
         logging.info('Connected to Splunk.')
         print "\t[+] Connected to Splunk"
+        return service
 
 
 def disconnect_from_splunk():
@@ -40,7 +41,6 @@ def disconnect_from_splunk():
 
 def check_for_splunkindex(SplunkIndex):
     """ Makes sure that the index we want to use exists. """
-    global target
     indexes = service.indexes
     indexlist = []
 

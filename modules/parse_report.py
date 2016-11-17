@@ -42,13 +42,10 @@ class dmarc_rua_parser:
 
             all_records = report.findall('record')
             logging.info('File: %s Total Records: %s' % (file_to_parse, len(all_records)))
-            # print("Total records: ", len(all_records))
+
 
             for record in all_records:
-
                 sourcetype = "dmarc_rua"
-
-
                 try:
                     source_ip = record.find('row/source_ip').text
                 except:
@@ -100,9 +97,6 @@ class dmarc_rua_parser:
                     % (report_organisation, report_contact, report_id, report_startdate, report_enddate,
                        source_ip, header_from, policy_dkim,policy_spf, auth_dkim_domain, auth_dkim_result,
                        auth_spf_domain, auth_spf_result))
-
-                # print("Publishing to Splunk")
-                # print(sourcetype, submitstring)
                 self.publish_to_splunk(sourcetype, submitstring, target)
             else:
                 pass

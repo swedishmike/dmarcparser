@@ -9,7 +9,8 @@ Reads the emails from IMAP, transmogrifies the data and outputs it into Splunk. 
 * Splunk SDK.
 * A Splunk installation that can accept conncections via the SDK.
 * A IMAP server that accepts connections on port 993 for secure connections.
-* You will of course also need a dmarc record defined in your dns zone. If you don't know how to do that - Google is your friend. ;-)
+* You will of course also need a dmarc record defined in your dns zone. If you don't know how to do that - Google is 
+your friend. ;-) You can also have a look here: https://dmarc.org 
 
 ## Installation and configuration
 

@@ -14,7 +14,8 @@ def connect_to_splunk(SplunkHost, SplunkPort, SplunkUser, SplunkPassword):
             host=SplunkHost,
             port=SplunkPort,
             username=SplunkUser,
-            password=SplunkPassword)
+            password=SplunkPassword,
+            autologin=True)
     except client.AuthenticationError:
         print "\t[-] Login to Splunk failed - check your settings"
         logging.error('Login to Splunk failed.', exc_info=True)

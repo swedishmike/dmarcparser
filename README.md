@@ -77,7 +77,7 @@ If you need even more logging, edit the file `modules/logconfig.py` and in the s
 ### Incorrect XML
 Some implementations seems to have incorrect XML syntax in them, which is not liked by the XML parser I'm using. There
 might be a way around this but I really can't be bothered to spend too much time on it. Each one of these will be caught
-by an exception and logges like this instead:
+by an exception and logged like this instead:
 
 ~~~~
 2016-11-14 17:06:38,296 [ERROR] (parse_report): Error opening and parsing unpacked/emailgate.se!domain.com!1478646000!1478732400.xml. Most likely malformed XML.

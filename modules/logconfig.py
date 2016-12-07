@@ -1,6 +1,6 @@
 import logging
-from logging.config import dictConfig
 import sys
+from logging.config import dictConfig
 
 
 def set_up_logging():

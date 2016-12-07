@@ -1,10 +1,7 @@
-import xml.etree.ElementTree as ET
 import datetime
-import sys
-import os
 import logging
-
-
+import sys
+import xml.etree.ElementTree as ET
 
 
 class dmarc_rua_parser:

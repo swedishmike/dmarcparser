@@ -1,14 +1,13 @@
+import email
+import glob
+import gzip
 import imaplib
+import logging
 import os
 import sys
-import email
 import zipfile
-import gzip
-import glob
-import logging
+
 from parse_report import dmarc_rua_parser
-
-
 
 zipfiles = []
 gzfiles = []

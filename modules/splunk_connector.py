@@ -1,7 +1,7 @@
-import sys
-import splunklib.client as client
 import logging
-import os
+import sys
+
+import splunklib.client as client
 
 
 def connect_to_splunk(SplunkHost, SplunkPort, SplunkUser, SplunkPassword):

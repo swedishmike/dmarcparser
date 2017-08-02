@@ -1,6 +1,6 @@
 import logging
-import sys
 from logging.config import dictConfig
+import sys
 
 
 def set_up_logging():
@@ -40,3 +40,4 @@ def set_up_logging():
 if __name__ == '__main__':
     print("Exiting - this should only be called from the main program.")
     sys.exit(1)
+

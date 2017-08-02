@@ -1,7 +1,10 @@
-import datetime
-import logging
-import sys
 import xml.etree.ElementTree as ET
+import datetime
+import sys
+import os
+import logging
+
+
 
 
 class dmarc_rua_parser:
@@ -52,13 +55,21 @@ class dmarc_rua_parser:
                 except:
                     header_from = "None"
                 try:
-                    policy_dkim = record.find('row/policy_evaluated/dkim').text
+                    envelope_from = record.find('identifiers/envelope_from').text
                 except:
-                    policy_dkim = "Missing"
+                    envelope_from = "None"
                 try:
-                    policy_spf = record.find('row/policy_evaluated/spf').text
+                    dkim_test = record.find('row/policy_evaluated/dkim').text
                 except:
-                    policy_spf = "Missing"
+                    dkim_test  = "None"
+                try:
+                    spf_test = record.find('row/policy_evaluated/spf').text
+                except:
+                    spf_test = "None"
+                try:
+                    policy_disposition = record.find('row/policy_evaluated/disposition').text
+                except:
+                    policy_disposition = "None"
                 try:
                     auth_dkim_domain = record.find('auth_results/dkim/domain').text
                 except:
@@ -83,17 +94,19 @@ class dmarc_rua_parser:
                     "report_id=\"%s\" "
                     "report_startdate=\"%s\" "
                     "report_enddate=\"%s\" "
-                    "srcip=\"%s\" "
+                    "src_ip=\"%s\" "
                     "header_from=\"%s\" "
-                    "policy_dkim=\"%s\" "
-                    "policy_spf=\"%s\" "
+                    "envelope_from=\"%s\" "
+                    "dkim_test=\"%s\" "
+                    "spf_test=\"%s\" "
+                    "policy_disposition=\"%s\" "
                     "dkim_domain=\"%s\" "
                     "dkim_result=\"%s\" "
                     "spf_domain=\"%s\" "
                     "spf_result=\"%s\" "
                     % (report_organisation, report_contact, report_id, report_startdate, report_enddate,
-                       source_ip, header_from, policy_dkim,policy_spf, auth_dkim_domain, auth_dkim_result,
-                       auth_spf_domain, auth_spf_result))
+                       source_ip, header_from, envelope_from, dkim_test, spf_test, policy_disposition,
+                       auth_dkim_domain, auth_dkim_result, auth_spf_domain, auth_spf_result))
                 self.publish_to_splunk(sourcetype, submitstring, target)
             else:
                 pass

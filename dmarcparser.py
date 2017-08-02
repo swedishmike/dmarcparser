@@ -1,15 +1,17 @@
 from  __future__ import print_function
-
+import os
 import sys
+# from modules.parseconfig import read_in_configfile
 from ConfigParser import SafeConfigParser
-
 from modules.imap_connect import connect_and_find_new_reports
-from modules.logconfig import set_up_logging
-from modules.splunk_connector import check_for_splunkindex
+from modules.imap_connect import send_files_to_parser
 from modules.splunk_connector import connect_to_splunk
 from modules.splunk_connector import disconnect_from_splunk
+from modules.splunk_connector import check_for_splunkindex
+from modules.logconfig import set_up_logging
 
-__version__ = "0.9.2"
+
+__version__ = "0.9.3"
 
 
 def read_in_configfile():

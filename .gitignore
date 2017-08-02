@@ -94,3 +94,6 @@ packed/
 unpacked/
 *.xml
 *.ini
+
+# Specific for this one 
+dmarcparser.sh

@@ -5,7 +5,7 @@
     <panel>
       <title>Failure rate per domain and subdomain</title>
       <input type="time" token="domain_time">
-        <label></label>
+        <label>Select time frame</label>
         <default>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
@@ -48,7 +48,7 @@
         </search>
       </input>
       <input type="time" token="ip_time">
-        <label></label>
+        <label>Select time frame</label>
         <default>
           <earliest>-24h@h</earliest>
           <latest>now</latest>

@@ -57,6 +57,24 @@ ImapPassword =
 
 These settings should be pretty self explanatory. 
 
+### Splunk examples
+
+This is an example of a Splunk search that gives you a breakdown per domain over total amount of reported emails, number of failed ones and a failure percentage.
+
+~~~~
+index=dmarc sourcetype=dmarc_rua header_from=* 
+| stats count(header_from) as total by header_from 
+| append[search index=dmarc sourcetype=dmarc_rua (dkim_test!=pass AND spf_test!=pass) | stats count(header_from) as failed by header_from] 
+| stats first(*) as * by header_from
+| eval failurerate=round(((failed/total)*100),2)."%"
+| table header_from total failed failurerate 
+| sort - failurerate, total
+| rename header_from as Domain, total as "Total number of emails", failed as "Number of failed emails", failurerate as "Failure rate" 
+| fillnull
+~~~~
+
+I have also added a file called 'dmarc_rua_report.xml' which gives you a Dashboard with this search as well as one breaking down failures per IP on a specific domain.
+
 ## Troubleshooting
 
 By default the program logs errors and informational entries into the file `dmarcparser.log`. Review this one to try and find out why things are not working as expected.
@@ -71,6 +89,10 @@ If you need even more logging, edit the file `modules/logconfig.py` and in the s
                 'propagate': True
             }
 ~~~~
+
+## Todo
+
+- Delete emails once processed. I'm thinking of adding a setting where you can specify whether or not you want Dmarcparser to delete the emails from the Exchange server once it has finished processing them.
 
 ## Known issues
 

@@ -97,3 +97,4 @@ unpacked/
 
 # Specific for this one 
 dmarcparser.sh
+!dmarc_rua_report.xml

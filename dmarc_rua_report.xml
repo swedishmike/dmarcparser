@@ -1,0 +1,82 @@
+<form>
+  <label>DMARC RUA Reporting</label>
+  <fieldset submitButton="false"></fieldset>
+  <row>
+    <panel>
+      <title>Failure rate per domain and subdomain</title>
+      <input type="time" token="domain_time">
+        <label></label>
+        <default>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </default>
+      </input>
+      <table>
+        <search>
+          <query>index=dmarc sourcetype=dmarc_rua header_from=*
+| stats count(header_from) as total by header_from
+| append[search index=dmarc sourcetype=dmarc_rua (dkim_test!=pass AND spf_test!=pass) | stats count(header_from) as failed by header_from]
+| stats first(*) as * by header_from
+| eval failurerate=round(((failed/total)*100),2)
+| table header_from total failed failurerate
+| sort - failurerate, total
+| rename header_from as Domain, total as "Total number of emails", failed as "Number of failed emails", failurerate as "Failure rate"
+| fillnull</query>
+          <earliest>$domain_time.earliest$</earliest>
+          <latest>$domain_time.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">100</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Failure rate per IP for a specified domain or subdomain</title>
+      <input type="dropdown" token="domain_name" searchWhenChanged="true">
+        <label>Select domain to investigate</label>
+        <fieldForLabel>header_from</fieldForLabel>
+        <fieldForValue>header_from</fieldForValue>
+        <search>
+          <query>index=dmarc sourcetype=dmarc_rua | stats count by header_from | sort asc header_from</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+      </input>
+      <input type="time" token="ip_time">
+        <label></label>
+        <default>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </default>
+      </input>
+      <table>
+        <search>
+          <query>index=dmarc sourcetype=dmarc_rua header_from=$domain_name|s$
+| stats count(src_ip) as total by src_ip
+| append[search index=dmarc sourcetype=dmarc_rua header_from=$domain_name|s$ (dkim_test!=pass AND spf_test!=pass) | stats count(header_from) as failed by src_ip]
+| stats first(*) as * by src_ip
+| eval failurerate=round(((failed/total)*100),2)."%"
+| table src_ip total failed failurerate
+| sort -failurerate, -total
+| rename src_ip as "Source IP", total as "Total number of emails", failed as "Number of failed emails", failurerate as "Failure rate"
+| fillnull</query>
+          <earliest>$ip_time.earliest$</earliest>
+          <latest>$ip_time.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">100</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</form>

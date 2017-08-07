@@ -9,4 +9,5 @@ SplunkIndex =
 ImapServer =
 ImapUser =
 ImapPassword =
+DeleteEmails =
 

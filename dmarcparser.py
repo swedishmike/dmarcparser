@@ -15,7 +15,7 @@ __version__ = "0.9.3"
 
 
 def read_in_configfile():
-    global SplunkHost, SplunkPort, SplunkUser, SplunkPassword, SplunkIndex, hostname, username, password
+    global SplunkHost, SplunkPort, SplunkUser, SplunkPassword, SplunkIndex, hostname, username, password, deleteemails
     logging.info('Reading and parsing configuration file')
     print("[*] Importing configuration values")
     parser = SafeConfigParser()
@@ -36,6 +36,7 @@ def read_in_configfile():
         hostname = parser.get('Imap Config', 'ImapServer')
         username = parser.get('Imap Config', 'ImapUser')
         password = parser.get('Imap Config', 'ImapPassword')
+        deleteemails = parser.get('Imap Config', 'DeleteEmails')
     except:
         print("\t[-] Missing or incorrect value in dmarcparser.ini. Exiting.")
         logging.error('Could not find a specific variable in dmarcparser.ini', exc_info=True)
@@ -58,7 +59,7 @@ def main():
     logging.info('Starting the program')
     read_in_configfile()
     initial_healthcheck()
-    imap = connect_and_find_new_reports(hostname, username, password, target)
+    imap = connect_and_find_new_reports(hostname, username, password, target, deleteemails)
     disconnect_from_splunk()
     logging.info('Exiting the program')
 

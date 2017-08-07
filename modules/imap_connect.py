@@ -15,7 +15,7 @@ packdir = "packed/"
 unpackdir = "unpacked/"
 
 
-def connect_and_find_new_reports(hostname, username, password, target):
+def connect_and_find_new_reports(hostname, username, password, target, deleteemails):
     # Check if the necessary directories are there, if not - create them
     if not os.path.exists(unpackdir):
         try:
@@ -95,6 +95,10 @@ def connect_and_find_new_reports(hostname, username, password, target):
                     extract_zip_file(attach_dest, target)
                 else:
                     extract_gz_file(attach_dest, target)
+        if deleteemails == "Yes":
+            imap.number('STORE', number, '+FLAGS', '(\\Deleted)')
+
+
     imap.close()
     imap.logout()
     logging.info('Disconnected from IMAP server')

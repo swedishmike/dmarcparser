@@ -99,9 +99,8 @@ def connect_and_find_new_reports(hostname, username, password, target, deleteema
         if deleteemails == "Yes":
            logging.info('Deleting the email from server')
            imap.store(number, '+FLAGS', '\\Deleted')
-           imap.expunge()
 
-
+    imap.expunge()
     imap.close()
     imap.logout()
     logging.info('Disconnected from IMAP server')

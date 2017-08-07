@@ -95,7 +95,7 @@ def connect_and_find_new_reports(hostname, username, password, target, deleteema
                     extract_zip_file(attach_dest, target)
                 else:
                     extract_gz_file(attach_dest, target)
-       
+        #
         if deleteemails == "Yes":
            logging.info('Deleting the email from server')
            imap.store(number, '+FLAGS', '\\Deleted')

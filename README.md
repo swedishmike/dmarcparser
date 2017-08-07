@@ -53,9 +53,11 @@ SplunkIndex =
 ImapServer =
 ImapUser =
 ImapPassword =
+DeleteEmails = No
 ~~~~
 
-These settings should be pretty self explanatory. 
+These settings should be pretty self explanatory. If you change the 'DeleteEmails' setting to Yes the program will
+delete the emails once they are processed. One way of keeping the Exchange mailbox in good shape. 
 
 ### Splunk examples
 
@@ -89,10 +91,6 @@ If you need even more logging, edit the file `modules/logconfig.py` and in the s
                 'propagate': True
             }
 ~~~~
-
-## Todo
-
-- Delete emails once processed. I'm thinking of adding a setting where you can specify whether or not you want Dmarcparser to delete the emails from the Exchange server once it has finished processing them.
 
 ## Known issues
 

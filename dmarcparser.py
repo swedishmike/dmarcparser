@@ -11,7 +11,7 @@ from modules.splunk_connector import check_for_splunkindex
 from modules.logconfig import set_up_logging
 
 
-__version__ = "0.9.3"
+__version__ = "0.9.4"
 
 
 def read_in_configfile():

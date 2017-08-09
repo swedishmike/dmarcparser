@@ -75,7 +75,11 @@ index=dmarc sourcetype=dmarc_rua header_from=*
 | fillnull
 ~~~~
 
-I have also added a file called [dmarc_rua_report.xml](dmarc_rua_report.xml) which gives you a Dashboard with this search as well as one breaking down failures per IP on a specific domain. See this [screenshot](dmarc_rua_report.png) for an idea of what it looks like.
+I have also added a file called [dmarc_rua_report.xml](dmarc_rua_report.xml) which gives you a Dashboard with this search as well as one breaking down failures per IP on a specific domain. 
+
+Example:
+
+![alt-text](dmarc_rua_report.png "Screenshot of an example report") 
 
 ## Troubleshooting
 

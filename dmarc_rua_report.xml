@@ -17,7 +17,7 @@
 | stats count(header_from) as total by header_from
 | append[search index=dmarc sourcetype=dmarc_rua (dkim_test!=pass AND spf_test!=pass) | stats count(header_from) as failed by header_from]
 | stats first(*) as * by header_from
-| eval failurerate=round(((failed/total)*100),2)
+| eval failurerate=round(((failed/total)*100),2)."%"
 | table header_from total failed failurerate
 | sort - failurerate, total
 | rename header_from as Domain, total as "Total number of emails", failed as "Number of failed emails", failurerate as "Failure rate"
